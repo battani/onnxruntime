@@ -99,13 +99,7 @@ option(onnxruntime_USE_TELEMETRY "Build with Telemetry" OFF)
 #It's default OFF because it's experimental now.
 option(onnxruntime_PREFER_SYSTEM_LIB "Experimental: Build with the preinstalled libraries in your system" OFF)
 
-#We have a check here but most of the cmake users don't know the Protobuf_USE_STATIC_LIBS 
-# variable exists and may leave it in a wrong state.
-if(onnxruntime_USE_FULL_PROTOBUF AND NOT Protobuf_USE_STATIC_LIBS)
-  #Indeed here should be a warning, not a fatal error. ONNX Runtime itself can work in such a 
-  #setting but it may cause compatibility issue when ONNX Runtime is integrated with the other ONNX ecosystem softwares.
-  message(FATAL_ERROR "Please use only one of onnxruntime_USE_FULL_PROTOBUF, Protobuf_USE_STATIC_LIBS")
-endif()
+
 
 set(protobuf_BUILD_TESTS OFF CACHE BOOL "Build protobuf tests" FORCE)
 #nsync tests failed on Mac Build
@@ -330,9 +324,16 @@ if(Protobuf_FOUND OR Protobuf_FOUND)
   message("Use protobuf from preinstalled system lib")
   if (onnxruntime_USE_FULL_PROTOBUF)
     set(PROTOBUF_LIB protobuf::libprotobuf)
+    #We have a check here but most of the cmake users don't know the Protobuf_USE_STATIC_LIBS 
+    # variable exists and may leave it in a wrong state.
+    if(NOT Protobuf_USE_STATIC_LIBS)
+      #Indeed here should be a warning, not a fatal error. ONNX Runtime itself can work in such a 
+      #setting but it may cause compatibility issue when ONNX Runtime is integrated with the other ONNX ecosystem softwares.
+      message(FATAL_ERROR "Please enable Protobuf_USE_STATIC_LIBS")
+    endif()
   else()
     set(PROTOBUF_LIB protobuf::libprotobuf-lite)
-  endif()
+  endif()  
 else()
   message("Use protobuf from submodule")
   # use protobuf as a submodule
