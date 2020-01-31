@@ -6,9 +6,14 @@ cmake_minimum_required(VERSION 3.13)
 
 # Project
 project(onnxruntime C CXX)
-cmake_policy(SET CMP0069 NEW)
-cmake_policy(SET CMP0092 NEW)
-set(CMAKE_POLICY_DEFAULT_CMP0069 NEW)
+if(policy CMP0069)
+  cmake_policy(SET CMP0069 NEW)
+  set(CMAKE_POLICY_DEFAULT_CMP0069 NEW)
+endif()
+
+if(policy CMP0092)
+  cmake_policy(SET CMP0092 NEW)
+endif()
 
 include(CheckCXXCompilerFlag)
 include(CheckLanguage)
