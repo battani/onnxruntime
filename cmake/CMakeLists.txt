@@ -6,12 +6,10 @@ cmake_minimum_required(VERSION 3.13)
 
 # Project
 project(onnxruntime C CXX)
-if(policy CMP0069)
-  cmake_policy(SET CMP0069 NEW)
-  set(CMAKE_POLICY_DEFAULT_CMP0069 NEW)
-endif()
+cmake_policy(SET CMP0069 NEW)
+set(CMAKE_POLICY_DEFAULT_CMP0069 NEW)
 
-if(policy CMP0092)
+if (${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.15")
   cmake_policy(SET CMP0092 NEW)
 endif()
 
